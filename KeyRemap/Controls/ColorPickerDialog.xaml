@@ -1,0 +1,195 @@
+<Window x:Class="KeyRemap.Controls.ColorPickerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{StaticResource AppWindow}"
+        Background="Transparent"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        SizeToContent="Height"
+        Width="430"
+        WindowStartupLocation="CenterOwner"
+        Title="选择颜色">
+    <Border Margin="14"
+            Background="{DynamicResource SurfaceBrush}"
+            BorderBrush="{DynamicResource BorderSoftBrush}"
+            BorderThickness="1"
+            CornerRadius="12">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="22" ShadowDepth="4" Opacity="0.20" Color="#000000" />
+        </Border.Effect>
+
+        <StackPanel Margin="22,20,22,18">
+            <TextBlock x:Name="TitleText" Style="{StaticResource H2Text}" Text="选择颜色" />
+
+            <!-- 色盘：左侧饱和度/明度方块，右侧色相条 -->
+            <Grid Height="164" Margin="0,14,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border x:Name="SvBox"
+                        Grid.Column="0"
+                        CornerRadius="8"
+                        ClipToBounds="True"
+                        Cursor="Cross"
+                        MouseLeftButtonDown="OnSvDown"
+                        MouseMove="OnSvMove"
+                        MouseLeftButtonUp="OnSvUp">
+                    <Grid>
+                        <Rectangle x:Name="SvHueLayer" />
+                        <!-- 横向白色渐隐：左侧饱和度 0（白），右侧饱和度 1（纯色相） -->
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Offset="0" Color="#FFFFFFFF" />
+                                    <GradientStop Offset="1" Color="#00FFFFFF" />
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <!-- 纵向黑色渐显：下方明度为 0 -->
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Offset="0" Color="#00000000" />
+                                    <GradientStop Offset="1" Color="#FF000000" />
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Canvas IsHitTestVisible="False">
+                            <Ellipse x:Name="SvThumbOuter"
+                                     Width="16"
+                                     Height="16"
+                                     Fill="Transparent"
+                                     Stroke="#66000000"
+                                     StrokeThickness="3" />
+                            <Ellipse x:Name="SvThumb"
+                                     Width="13"
+                                     Height="13"
+                                     Fill="Transparent"
+                                     Stroke="White"
+                                     StrokeThickness="2" />
+                        </Canvas>
+                    </Grid>
+                </Border>
+
+                <Border x:Name="HueBox"
+                        Grid.Column="1"
+                        Width="22"
+                        Margin="12,0,0,0"
+                        CornerRadius="8"
+                        ClipToBounds="True"
+                        Cursor="Hand"
+                        MouseLeftButtonDown="OnHueDown"
+                        MouseMove="OnHueMove"
+                        MouseLeftButtonUp="OnHueUp">
+                    <Grid>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Offset="0.000" Color="#FFFF0000" />
+                                    <GradientStop Offset="0.167" Color="#FFFFFF00" />
+                                    <GradientStop Offset="0.333" Color="#FF00FF00" />
+                                    <GradientStop Offset="0.500" Color="#FF00FFFF" />
+                                    <GradientStop Offset="0.667" Color="#FF0000FF" />
+                                    <GradientStop Offset="0.833" Color="#FFFF00FF" />
+                                    <GradientStop Offset="1.000" Color="#FFFF0000" />
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Canvas IsHitTestVisible="False">
+                            <Rectangle x:Name="HueThumbOuter"
+                                       Width="22"
+                                       Height="8"
+                                       Fill="Transparent"
+                                       Stroke="#66000000"
+                                       StrokeThickness="3" />
+                            <Rectangle x:Name="HueThumb"
+                                       Width="22"
+                                       Height="5"
+                                       Fill="Transparent"
+                                       Stroke="White"
+                                       StrokeThickness="2" />
+                        </Canvas>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- RGB 数值 -->
+            <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="18" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="46" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="R" VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                <Slider x:Name="RSlider" Grid.Row="0" Grid.Column="1" Style="{StaticResource ColorSlider}"
+                        ValueChanged="OnRgbSliderChanged" />
+                <TextBlock x:Name="RValue" Grid.Row="0" Grid.Column="2" Text="0" VerticalAlignment="Center"
+                           TextAlignment="Right" Foreground="{DynamicResource TextPrimaryBrush}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="G" VerticalAlignment="Center" Margin="0,4,0,0"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                <Slider x:Name="GSlider" Grid.Row="1" Grid.Column="1" Style="{StaticResource ColorSlider}"
+                        Margin="0,4,0,0" ValueChanged="OnRgbSliderChanged" />
+                <TextBlock x:Name="GValue" Grid.Row="1" Grid.Column="2" Text="0" VerticalAlignment="Center"
+                           Margin="0,4,0,0" TextAlignment="Right" Foreground="{DynamicResource TextPrimaryBrush}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="B" VerticalAlignment="Center" Margin="0,4,0,0"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                <Slider x:Name="BSlider" Grid.Row="2" Grid.Column="1" Style="{StaticResource ColorSlider}"
+                        Margin="0,4,0,0" ValueChanged="OnRgbSliderChanged" />
+                <TextBlock x:Name="BValue" Grid.Row="2" Grid.Column="2" Text="0" VerticalAlignment="Center"
+                           Margin="0,4,0,0" TextAlignment="Right" Foreground="{DynamicResource TextPrimaryBrush}" />
+            </Grid>
+
+            <!-- 十六进制 -->
+            <Grid Margin="0,14,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="十六进制" VerticalAlignment="Center"
+                           Margin="0,0,12,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                <TextBox x:Name="HexBox" Grid.Column="1" Style="{StaticResource AppTextBox}"
+                         MaxLength="7" KeyDown="OnHexKeyDown" LostFocus="OnHexCommit" />
+            </Grid>
+
+            <!-- 预设 -->
+            <TextBlock Text="常用颜色" Margin="0,14,0,6" Style="{StaticResource CaptionText}" />
+            <WrapPanel x:Name="PresetPanel" />
+
+            <!-- 对比与按钮 -->
+            <Grid Margin="0,16,0,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border x:Name="OriginalSwatch"
+                            Width="34" Height="34" CornerRadius="6"
+                            BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1" />
+                    <TextBlock Text="原色" VerticalAlignment="Center" Margin="8,0,16,0"
+                               Style="{StaticResource CaptionText}" />
+                    <Border x:Name="NewSwatch"
+                            Width="34" Height="34" CornerRadius="6"
+                            BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1" />
+                    <TextBlock Text="新色" VerticalAlignment="Center" Margin="8,0,0,0"
+                               Style="{StaticResource CaptionText}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="取消" Style="{StaticResource SecondaryButton}" MinWidth="86"
+                            IsCancel="True" Click="OnCancel" />
+                    <Button Content="确定" Style="{StaticResource PrimaryButton}" MinWidth="86"
+                            Margin="10,0,0,0" IsDefault="True" Click="OnConfirm" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Border>
+</Window>

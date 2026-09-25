@@ -1,0 +1,4 @@
+C:\Users\HP\AppData\Local\Temp\measure\fd2\按键映射.exe
+C:\Users\HP\AppData\Local\Temp\measure\fd2\按键映射.dll
+C:\Users\HP\AppData\Local\Temp\measure\fd2\按键映射.deps.json
+C:\Users\HP\AppData\Local\Temp\measure\fd2\按键映射.runtimeconfig.json

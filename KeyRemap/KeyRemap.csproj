@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- NotifyIcon for the tray icon; only the WinForms interop surface is used. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>按键映射</AssemblyName>
+    <RootNamespace>KeyRemap</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+    <!-- WFO0003 tells WinForms apps to move DPI settings out of the manifest. This is a WPF
+         app that only borrows NotifyIcon, and it needs per-monitor DPI from the manifest. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Manifest resource, not a WPF Resource: the icon must be readable without a live
+         Application instance and regardless of which assembly started the process. -->
+    <EmbeddedResource Include="Assets\app.ico" LogicalName="KeyRemap.app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="KeyRemapTest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- WinForms is only here for NotifyIcon; its implicit usings would collide with WPF
+         (Application, MessageBox, Button, Color...), so they are removed. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+  <!-- App.xaml is the application definition, loaded explicitly so the single-instance
+       guard in App.OnStartup runs before any window is created. -->
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+  </ItemGroup>
+
+  <!-- Portable single-file publish settings; only apply on `dotnet publish`. -->
+  <PropertyGroup>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+</Project>

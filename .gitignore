@@ -1,0 +1,18 @@
+# 构建产物
+[Bb]in/
+[Oo]bj/
+/publish/
+
+# 程序运行时在自身目录里生成的数据
+/config.json
+/config.json.tmp
+/config.json.bak
+/app-icon.ico
+/desktop.ini
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+*.DotSettings.user

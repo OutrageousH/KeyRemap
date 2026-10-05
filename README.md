@@ -138,7 +138,7 @@ dotnet run --project KeyRemap/KeyRemap.csproj
 dotnet publish KeyRemap/KeyRemap.csproj -c Release -r win-x64 --self-contained true -o publish
 ```
 
-Windows 上也可以直接双击仓库根目录的 `发布便携版.bat`。
+Windows 上也可以直接双击仓库根目录的 `发布便携版.bat`，运行后获取到public文件夹以及内含的.exe问题文件，随后其他文件可直接删除，点击该exe文件即可直接运行。
 
 > **发布前记得关掉正在运行的程序。** 程序关窗后可能还在托盘里，占用着 `publish\按键映射.exe`，会导致覆盖失败。
 
